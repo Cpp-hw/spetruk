@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include <map>
+#include <ctime>
 #define _USE_MATH_DEFINES
 #include <cmath>
 
@@ -23,23 +24,23 @@ void drawTriangle(int** triangle, int length)
 
 long long fact(int n)
 {
-    long long result = 1;
+	long long result = 1;
 
 	if (n == 0 || n == 1)
 		return result;
-	for(int i = 2; i <= n; i++)
-		result*=i;
+	for (int i = 2; i <= n; i++)
+		result *= i;
 	return result;
 }
 
 void pascalsTriangle(int n)
 {
-	for(int row = 0; row < n; row++)
+	for (int row = 0; row < n; row++)
 	{
-		cout << string(n-row, ' ');
-		for(int k = 0; k <= row; k++ )
+		cout << string(n - row, ' ');
+		for (int k = 0; k <= row; k++)
 		{
-			long long elem = fact(row)/(fact(row-k)*fact(k));
+			long long elem = fact(row) / (fact(row - k)*fact(k));
 			cout << elem << " ";
 		}
 		cout << endl;
@@ -48,18 +49,18 @@ void pascalsTriangle(int n)
 
 void validPalindrome(string text)
 {
-	int length = text.length()-1;
+	int length = text.length() - 1;
 	bool isPalindrome = false;
 	string abc = "abcdefghijklmnopqrstuvwxyz";
 
 
-	for(int i = 0; i <= length; i++)
+	for (int i = 0; i <= length; i++)
 	{
-		if (abc.find(text[i] != string::npos) && abc.find(text[length-i] != string::npos))
+		if (abc.find(text[i] != string::npos) && abc.find(text[length - i] != string::npos))
 		{
-			if(text[i] != text[length-i])
+			if (text[i] != text[length - i])
 				break;
-			if(i==length)
+			if (i == length)
 				isPalindrome = true;
 		}
 	}
@@ -72,16 +73,16 @@ void zigZagConversion(string s, int n)
 {
 	string result = "";
 	int length = s.length();
-	int delta0 = n + (n-2);
-	for(int depth = n; depth > 0; depth--)
+	int delta0 = n + (n - 2);
+	for (int depth = n; depth > 0; depth--)
 	{
-		int delta = depth + (depth-2);
-		for(int cur = n-depth; cur < length; cur+=delta0)
+		int delta = depth + (depth - 2);
+		for (int cur = n - depth; cur < length; cur += delta0)
 		{
-			result+=s[cur];
-			if(cur+delta < length && delta<delta0 && delta != 0)
+			result += s[cur];
+			if (cur + delta < length && delta<delta0 && delta != 0)
 			{
-				result+=s[cur+delta];
+				result += s[cur + delta];
 			}
 		}
 	}
@@ -91,6 +92,7 @@ void zigZagConversion(string s, int n)
 void wordPattern()
 {
 	bool result = false;
+	int begIdx = 0;
 
 	string text, pattern;
 	cout << "Enter text: ";
@@ -98,29 +100,43 @@ void wordPattern()
 	cout << "Enter pattern: ";
 	getline(cin, pattern);
 
-	istringstream stream(text);
-	string tmp;
+	map<char, int> __text;
+	map<char, int> __pattern;
 
-	map<string, int> _text;
-	map<char, int>   _pattern;
-
-
-	int iter = 0;
-	while ( stream >> tmp )
+	for (int i = 0; i < text.length(); i++)
 	{
-		if(pattern.length() <= 0) break;
-		_text.insert({ tmp, iter });
-		_pattern.insert({ pattern[iter], iter });
-		if( _text.find(tmp)->second !=
-			_pattern.find(pattern[iter])->second)
-			    break;
-		iter++;
+		if (result) break;
+		if (pattern.length() <= 0) break;
+		__text.clear();
+		__pattern.clear();
+
+		for (int j = 0; j < pattern.length(); j++)
+		{
+			__text.insert({ text[i+j], j});
+			__pattern.insert({ pattern[j], j });
+
+			if (__text.find(text[i + j])->second !=
+				__pattern.find(pattern[j])->second)
+				break;
+
+			if (j == pattern.length() - 1)
+			{
+				begIdx = j+i-(pattern.length()-1);
+				result = true;
+			}
+		}
 	}
-	if(iter == pattern.length())
-		result = true;
-
+	string patText = "";
+	if (result)
+	{
+		for (int i = begIdx; i < begIdx+pattern.length(); i++)
+		{
+			patText += text[i];
+		}
+		cout << "Found text: " << patText << endl;
+	}
+	
 	cout << "Pattern is valid: " << result << endl;
-
 
 }
 
@@ -180,9 +196,9 @@ void sudokuChecker(int board[][9])
 
 	if (isValid)
 	{
-		for (int row = 0; row <= 6; row+=3)
+		for (int row = 0; row <= 6; row += 3)
 		{
-			for (int col = 0; col <= 6; col+=3)
+			for (int col = 0; col <= 6; col += 3)
 			{
 				sumOfBox = 0;
 				for (int i = 0; i < 3; i++)
@@ -241,17 +257,17 @@ void triangularAlgo(int** triangle, int length)
 
 	int sum = 0;
 
-	for (int i = length-2; i >= 0; i--)
+	for (int i = length - 2; i >= 0; i--)
 	{
 		for (int j = 0; j <= i; j++)
 		{
-			if (tmpTriangle[i+1][j] < tmpTriangle[i+1][j+1])
+			if (tmpTriangle[i + 1][j] < tmpTriangle[i + 1][j + 1])
 			{
-				tmpTriangle[i][j] += tmpTriangle[i+1][j];
+				tmpTriangle[i][j] += tmpTriangle[i + 1][j];
 			}
 			else
 			{
-				tmpTriangle[i][j] += tmpTriangle[i+1][j+1];
+				tmpTriangle[i][j] += tmpTriangle[i + 1][j + 1];
 			}
 		}
 	}
@@ -274,7 +290,7 @@ void randTriangularMatrix(int** triangle, int length)
 	srand(time(NULL));
 	for (int i = 0; i < length; i++)
 	{
-		for (int j = 0; j < length; j++) 
+		for (int j = 0; j < length; j++)
 		{
 			triangle[i][j] = INT_MAX;
 			if (j <= i)
@@ -287,22 +303,35 @@ void randTriangularMatrix(int** triangle, int length)
 
 int main()
 {
-	//pascalsTriangle(5);
-	//validPalindrome("stas sats");
-	//zigZagConversion("stanislavpetruk", 5);
-	//wordPattern();
+	cout << "Pascals Triangle\n";
+	pascalsTriangle(5);
+	
+	cout << "\n\nValid palindrome\n";
+	validPalindrome("stas sats");
 
+	cout << "\n\nZigZag conversion\n";
+	zigZagConversion("randommessage", 4);
+
+	cout << "\n\n Word Pattern\n";
+	wordPattern();
+
+
+
+	//Trianngular algo
+	cout << "\n\n Triangular algo\n";
 	int** triangle = new int*[5];
 	for (int i = 0; i < 5; i++)
 		triangle[i] = new int[5];
-	
+
 	randTriangularMatrix(triangle, 5);
 	triangularAlgo(triangle, 5);
 	for (int i = 0; i < 5; i++)
 		delete[] triangle[i];
 	delete[] triangle;
+	//end of Triangular algo
 
-	int corBoard[][9] = 
+	//Sudoku checker
+	int corBoard[][9] =
 	{
 		{ 8,3,5,4,1,6,9,2,7 },
 		{ 2,9,6,8,5,7,4,3,1 },
@@ -327,9 +356,13 @@ int main()
 		{ 9,8,1,3,4,5,2,7,6 },
 		{ 3,7,4,9,6,2,8,1,1 }
 	};
-	
+
+	cout << "\n\nSudoku checker \n";
+
 	sudokuChecker(corBoard);
-	sudokuChecker(inBoard);
+	//sudokuChecker(inBoard);
+	//End of sudoku checker
+
 
 	return 0;
 }
